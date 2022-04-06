@@ -22,5 +22,4 @@ RUN apt update && \
 	-y
 
 COPY ./rsyslog.conf ./etc/
-
-RUN service rsyslog start
+RUN service rsyslog start # <- требует ручного запуска
