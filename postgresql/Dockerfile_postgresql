@@ -20,8 +20,7 @@ postgresql-12-cron \
 -y
 
 COPY ./rsyslog.conf ./etc/
-#RUN sed -i '/imklog/s/^/#/' /etc/rsyslog.conf
-RUN service rsyslog start
+RUN service rsyslog start # <- требует ручного запуска
 
 COPY ./setup.sh ./
-#RUN ./setup.sh
+#RUN ./setup.sh # <- Требует перезагрузки
