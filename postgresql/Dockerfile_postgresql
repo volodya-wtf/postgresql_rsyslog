@@ -1,0 +1,27 @@
+FROM postgres:12
+
+RUN apt update && apt-get install \
+openssh-server \
+vim \ 
+iputils-ping \
+whiptail \
+telnet \
+curl \
+net-tools \
+software-properties-common \
+cron \
+libpq-dev \
+libasound2 \
+sudo \
+git \
+tcpdump \
+rsyslog \
+postgresql-12-cron \
+-y
+
+COPY ./rsyslog.conf ./etc/
+#RUN sed -i '/imklog/s/^/#/' /etc/rsyslog.conf
+RUN service rsyslog start
+
+COPY ./setup.sh ./
+#RUN ./setup.sh

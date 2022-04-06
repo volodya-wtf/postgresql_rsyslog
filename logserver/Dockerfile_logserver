@@ -1,0 +1,26 @@
+FROM ubuntu:20.04
+
+RUN apt update && \
+	DEBIAN_FRONTEND=nointeractive \
+	TZ=Asia/Novokuznetsk \
+	apt-get install \
+	openssh-server \
+	vim \
+	iputils-ping \
+	whiptail \
+	telnet \
+	curl \
+	net-tools \
+	software-properties-common \
+	cron \
+	libpq-dev \
+	libasound2 \
+	sudo \
+	git \
+	rsyslog \
+	tcpdump \
+	-y
+
+COPY ./rsyslog.conf ./etc/
+
+RUN service rsyslog start

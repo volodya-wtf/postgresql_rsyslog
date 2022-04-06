@@ -1,0 +1,70 @@
+version: '3.7'
+
+services:
+  postgres:
+    build:
+      context: ./postgresql
+      dockerfile: ./Dockerfile_postgresql
+
+    container_name: belka_db_postgres
+    restart: always
+    env_file:
+      - .env
+    environment:
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+      POSTGRES_USER: ${PG_USERNAME}
+      POSTGRES_DB: ${PG_DATABASE}
+    networks:
+      private_network:
+        ipv4_address: 172.16.0.3
+    ports:
+      - "5432:5432"
+    volumes:
+      - belka_db_postgres:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: belka_db_pgadmin
+    restart: always
+    user: 5050:5050
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+      PGADMIN_LISTEN_PORT: 80
+    networks:
+      private_network:
+        ipv4_address: 172.16.0.4
+    ports:
+      - 81:80
+    volumes:
+      - belka_db_pgadmin:/var/lib/pgadmin
+    depends_on:
+      - postgres
+
+  logserver:
+    build:
+      context: ./logserver
+      dockerfile: ./Dockerfile_logserver
+    image: ubuntu
+    container_name: belka_db_logserver
+    restart: always
+    command: ["sleep", "infinity"]
+    networks:
+      private_network:
+        ipv4_address: 172.16.0.5
+    ports:
+      - 11514:11514
+      - 11514:11514/udp
+
+volumes:
+  belka_db_pgadmin:
+    external: True
+  belka_db_postgres:
+    external: True
+
+networks:
+  private_network:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.0.0/16
